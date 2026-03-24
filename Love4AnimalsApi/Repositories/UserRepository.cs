@@ -2,6 +2,8 @@ using System;
 using Love4AnimalsApi.Interfaces;
 using Love4AnimalsApi.Models;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Love4AnimalsApi.Repositories;
 
@@ -15,21 +17,24 @@ public class UserRepository : IUserRepository
         User newUser = new(1, "Name", "test@gmail.com", "password123", "Admin");
         this.Users.Add(newUser);
     }
-    public List<User> GetAllUsers()
+
+    // NUEVO MÉTODO: Obtiene un usuario específico por ID en lugar de traer la lista completa
+    public User? GetUserById(int id)
     {
-        return this.Users;
+        return this.Users.FirstOrDefault(u => u.Id == id);
     }
+
     public User CreateUser(User user)
     {
-        // Generar un nuevo ID
         int newId = this.Users.Any() ? this.Users.Max(u => u.Id) + 1 : 1;
         user.Id = newId;
         this.Users.Add(user);
         return user;
     }
+
     public User? UpdateUser(User user)
     {
-        User? existingUser = this.Users?.FirstOrDefault(u => u.Id == user.Id);
+        User? existingUser = this.Users.FirstOrDefault(u => u.Id == user.Id);
         if (existingUser == null)
             throw new Exception($"Usuario con ID {user.Id} no encontrado");
         
@@ -39,13 +44,14 @@ public class UserRepository : IUserRepository
         existingUser.Rol = user.Rol;
         return existingUser;
     }
+
     public bool DeleteUser(int id)
     {
-        User? userToDelete = this.Users?.FirstOrDefault(u => u.Id == id);
+        User? userToDelete = this.Users.FirstOrDefault(u => u.Id == id);
         if (userToDelete == null)
             return false;
         
-        this.Users?.Remove(userToDelete);
+        this.Users.Remove(userToDelete);
         return true;
     }
 }

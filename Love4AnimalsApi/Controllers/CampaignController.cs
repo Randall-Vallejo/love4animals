@@ -1,7 +1,6 @@
 using Love4AnimalsApi.Dtos;
 using Love4AnimalsApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Love4AnimalsApi.Controllers
 {
@@ -10,15 +9,23 @@ namespace Love4AnimalsApi.Controllers
     public class CampaignController : ControllerBase
     {
         private ICampaignService campaignService;
-        public CampaignController (ICampaignService campaignService)
+        public CampaignController(ICampaignService campaignService)
         {
             this.campaignService = campaignService;
         }
-        [HttpGet("")]
-        public List<GetCampaignDto> GetAllCampaigns()
+
+        // NUEVO: Ahora pide el ID por la URL -> GET v1/campaigns/1
+        [HttpGet("{id}")]
+        public ActionResult<GetCampaignDto> GetCampaignById(int id)
         {
-            return this.campaignService.GetAllCampaigns();
+            var campaign = this.campaignService.GetCampaignById(id);
+            
+            if (campaign == null)
+                return NotFound($"Campaña con ID {id} no encontrada");
+
+            return Ok(campaign);
         }
+
         [HttpPost("")]
         public ActionResult<GetCampaignDto> CreateCampaign([FromBody] CreateCampaignDto createCampaignDto)
         {
@@ -28,6 +35,7 @@ namespace Love4AnimalsApi.Controllers
             GetCampaignDto newCampaign = this.campaignService.CreateCampaign(createCampaignDto);
             return Created("", newCampaign);
         }
+
         [HttpPut("{id}")]
         public ActionResult<GetCampaignDto> UpdateCampaign(int id, [FromBody] UpdateCampaignDto updateCampaignDto)
         {
@@ -47,6 +55,7 @@ namespace Love4AnimalsApi.Controllers
                 return NotFound(ex.Message);
             }
         }
+
         [HttpDelete("{id}")]
         public ActionResult DeleteCampaign(int id)
         {

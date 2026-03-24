@@ -1,12 +1,11 @@
-using System;
 using Love4AnimalsApi.Models;
-using System.Collections.Generic;
 
 namespace Love4AnimalsApi.Interfaces;
 
 public interface IUserRepository
 {
-    public List<User> GetAllUsers();
+    // Cambiado: Busca un usuario por ID
+    public User? GetUserById(int id); 
     public User CreateUser(User user);
     public User UpdateUser(User user);
     public bool DeleteUser(int id);

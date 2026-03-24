@@ -16,18 +16,20 @@ public class CampaignRepository : ICampaignRepository
         Campaign newCampaign = new(1, "Campaña de Refugio", "Ayuda a construir un refugio para animales abandonados", 5000.00m, 1250.50m, DateTime.Now.AddDays(-10), DateTime.Now.AddDays(20), "Activa", 1);
         this.Campaigns.Add(newCampaign);
     }
-    public List<Campaign> GetAllCampaigns()
+
+    public Campaign? GetCampaignById(int id)
     {
-        return this.Campaigns;
+        return this.Campaigns.FirstOrDefault(c => c.IdCampania == id);
     }
+
     public Campaign CreateCampaign(Campaign campaign)
     {
-        // Generar un nuevo ID
         int newId = this.Campaigns.Any() ? this.Campaigns.Max(c => c.IdCampania) + 1 : 1;
         campaign.IdCampania = newId;
         this.Campaigns.Add(campaign);
         return campaign;
     }
+
     public Campaign UpdateCampaign(Campaign campaign)
     {
         Campaign? existingCampaign = this.Campaigns.FirstOrDefault(c => c.IdCampania == campaign.IdCampania);
@@ -44,6 +46,7 @@ public class CampaignRepository : ICampaignRepository
         existingCampaign.UsuarioId = campaign.UsuarioId;
         return existingCampaign;
     }
+
     public bool DeleteCampaign(int id)
     {
         Campaign? campaignToDelete = this.Campaigns.FirstOrDefault(c => c.IdCampania == id);
