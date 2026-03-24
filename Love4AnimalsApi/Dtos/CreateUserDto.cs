@@ -1,7 +1,6 @@
 namespace Love4AnimalsApi.Dtos;
 
-public record GetUserDto (
-    int Id,
+public record CreateUserDto (
     string Name,
     string Email,
     string Password,

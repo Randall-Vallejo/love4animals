@@ -1,6 +1,6 @@
 namespace Love4AnimalsApi.Dtos;
 
-public record GetUserDto (
+public record UpdateUserDto (
     int Id,
     string Name,
     string Email,
