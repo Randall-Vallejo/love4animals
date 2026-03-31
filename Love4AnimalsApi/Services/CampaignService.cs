@@ -7,10 +7,12 @@ namespace Love4AnimalsApi.Services;
 public class CampaignService : ICampaignService
 {
     private ICampaignRepository campaignRepository;
+    private IUserRepository userRepository;
     
-    public CampaignService(ICampaignRepository campaignRepository)
+    public CampaignService(ICampaignRepository campaignRepository, IUserRepository userRepository)
     {
         this.campaignRepository = campaignRepository;
+        this.userRepository = userRepository;
     }
 
     public GetCampaignDto? GetCampaignById(int id)
@@ -27,6 +29,11 @@ public class CampaignService : ICampaignService
 
     public GetCampaignDto CreateCampaign(CreateCampaignDto createCampaignDto)
     {
+        // Validar que el usuario existe
+        User? user = userRepository.GetUserById(createCampaignDto.UsuarioId);
+        if (user == null)
+            throw new ArgumentException("Usuario no encontrado");
+
         Campaign newCampaign = new(0, createCampaignDto.Titulo, createCampaignDto.Descripcion, createCampaignDto.MetaMonto, 0.00m, createCampaignDto.FechaInicio, createCampaignDto.FechaFin, createCampaignDto.Estado, createCampaignDto.UsuarioId);
         Campaign createdCampaign = campaignRepository.CreateCampaign(newCampaign);
         return new GetCampaignDto(createdCampaign.IdCampania, createdCampaign.Titulo, createdCampaign.Descripcion, createdCampaign.MetaMonto, createdCampaign.MontoRecaudado, createdCampaign.FechaInicio, createdCampaign.FechaFin, createdCampaign.Estado, createdCampaign.UsuarioId);
@@ -34,6 +41,11 @@ public class CampaignService : ICampaignService
 
     public GetCampaignDto UpdateCampaign(UpdateCampaignDto updateCampaignDto)
     {
+        // Validar que el usuario existe
+        User? user = userRepository.GetUserById(updateCampaignDto.UsuarioId);
+        if (user == null)
+            throw new ArgumentException("Usuario no encontrado");
+
         Campaign campaignToUpdate = new(updateCampaignDto.IdCampania, updateCampaignDto.Titulo, updateCampaignDto.Descripcion, updateCampaignDto.MetaMonto, updateCampaignDto.MontoRecaudado, updateCampaignDto.FechaInicio, updateCampaignDto.FechaFin, updateCampaignDto.Estado, updateCampaignDto.UsuarioId);
         Campaign updatedCampaign = campaignRepository.UpdateCampaign(campaignToUpdate);
         return new GetCampaignDto(updatedCampaign.IdCampania, updatedCampaign.Titulo, updatedCampaign.Descripcion, updatedCampaign.MetaMonto, updatedCampaign.MontoRecaudado, updatedCampaign.FechaInicio, updatedCampaign.FechaFin, updatedCampaign.Estado, updatedCampaign.UsuarioId);

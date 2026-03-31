@@ -18,7 +18,6 @@ public class UserRepository : IUserRepository
         this.Users.Add(newUser);
     }
 
-    // NUEVO MÉTODO: Obtiene un usuario específico por ID en lugar de traer la lista completa
     public User? GetUserById(int id)
     {
         return this.Users.FirstOrDefault(u => u.Id == id);
@@ -32,7 +31,7 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public User? UpdateUser(User user)
+    public User UpdateUser(User user)
     {
         User? existingUser = this.Users.FirstOrDefault(u => u.Id == user.Id);
         if (existingUser == null)
