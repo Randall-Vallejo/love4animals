@@ -26,6 +26,19 @@ Se estructuró el motor para la recaudación de fondos dentro de la ruta /v1/cam
 - Actualizar Campaña (PUT): Modifica la información o el estado de una campaña existente localizándola mediante su ID específico.
 - Eliminar Campaña (DELETE): Da de baja una causa archivada del sistema usando su ID específico.
 
+### 3. Gestión de Posts (L4A-03)
+Se implementó el CRUD completo para posts en la ruta /v1/users/posts, permitiendo publicar contenido que puede asociarse opcionalmente a campañas:
+- Obtener Post por ID (GET): Recupera un post específico mediante su ID.
+- Crear Post (POST): Publica un nuevo post vinculado a un usuario existente, con opción de asociarlo a una campaña.
+- Actualizar Post (PUT): Modifica el contenido de un post existente.
+- Eliminar Post (DELETE): Remueve un post del sistema.
+
+#### Características adicionales:
+- **Validaciones**: Verifica que el usuario y la campaña (si se especifica) existan antes de crear o actualizar.
+- **Asociación opcional**: Los posts pueden estar ligados a campañas para promocionar causas.
+- **Respuestas JSON estructuradas**: Errores y respuestas siguen un formato consistente con códigos de estado y mensajes descriptivos.
+- **Arquitectura**: Incluye modelo Post, DTOs (CreatePostDto, GetPostDto, UpdatePostDto), interfaces, servicios, repositorios y controlador.
+
 ---
 
 ## Cómo ejecutar el proyecto localmente

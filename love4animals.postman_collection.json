@@ -1,0 +1,352 @@
+{
+  "info": {
+    "_postman_id": "8a1a0d8c-5abc-47cb-8d4e-2e213900b0ab",
+    "name": "love4animals",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52546436",
+    "_collection_link": "https://go.postman.co/collection/52546436-8a1a0d8c-5abc-47cb-8d4e-2e213900b0ab?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Obtener campaigns",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/campaigns",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "campaigns"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear campaings",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"Titulo\": \"Campaña de Vacunas para Perros\",\r\n  \"Descripcion\": \"Ayuda a vacunar a 100 perros callejeros en la ciudad de Lima\",\r\n  \"MetaMonto\": 3000.00,\r\n  \"FechaInicio\": \"2026-04-01T00:00:00\",\r\n  \"FechaFin\": \"2026-06-01T23:59:59\",\r\n  \"Estado\": \"Activa\",\r\n  \"UsuarioId\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/campaigns",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "campaigns"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Obtener Usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear Usuario",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Juan Pérez\",\r\n  \"email\": \"juan@example.com\",\r\n  \"password\": \"MiPassword123\",\r\n  \"rol\": \"User\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar Campaña",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/campaigns/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "campaigns",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Actualizar Campaña",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"IdCampania\": 2,\r\n  \"Titulo\": \"Campaña actualizada\",\r\n  \"Descripcion\": \"Descripción nueva\",\r\n  \"MetaMonto\": 4000.00,\r\n  \"MontoRecaudado\": 500.00,\r\n  \"FechaInicio\": \"2026-04-01T00:00:00\",\r\n  \"FechaFin\": \"2026-06-01T00:00:00\",\r\n  \"Estado\": \"Activa\",\r\n  \"UsuarioId\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/campaigns/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "campaigns",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Actualizar Usuario",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"id\": 2,\r\n  \"name\": \"Jose Perez\",\r\n  \"email\": \"jose.perez@example.com\",\r\n  \"password\": \"Consola21\",\r\n  \"rol\": \"Misionero\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/users/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar Usuario",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/users/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"titulo\": \"Ayuda a los gatitos abandonados\",\r\n    \"descripcion\": \"En esta campaña estamos recolectando fondos para construir un refugio para gatitos. ¡Únete y comparte!\",\r\n    \"fotoUrl\": \"https://example.com/gatitos.jpg\",\r\n    \"usuarioId\": 1,\r\n    \"idCampania\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/users/posts",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "users",
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Obtener Post",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/users/posts/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "users",
+            "posts",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Actualizar Post",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"titulo\": \"Ayuda a los monos en SCZ\",\r\n    \"descripcion\": \"En esta campaña estamos recolectando fondos para construir un refugio para monos. ¡Únete y comparte!\",\r\n    \"fotoUrl\": \"https://example.com/gatitos.jpg\",\r\n    \"usuarioId\": 1,\r\n    \"idCampania\": 7\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/users/posts/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "users",
+            "posts",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar Post",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/users/posts/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "users",
+            "posts",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
