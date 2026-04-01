@@ -63,7 +63,7 @@ namespace Love4AnimalsApi.Controllers
             if (!deleted)
                 return NotFound(new { error = "Not Found", message = $"Usuario con ID {id} no encontrado", statusCode = 404 });
 
-            return Ok(new { message = "Usuario eliminado exitosamente", deleted = true });
+            return Ok(new { message = "Usuario eliminado exitosamente", deleted = true, statusCode = 200 });
         }
     }
 }

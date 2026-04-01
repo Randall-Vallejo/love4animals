@@ -73,7 +73,7 @@ namespace Love4AnimalsApi.Controllers
             if (!deleted)
                 return NotFound(new { error = "Not Found", message = $"Campaña con ID {id} no encontrada", statusCode = 404 });
 
-            return Ok(new { message = "Campaña eliminada exitosamente", deleted = true });
+            return Ok(new { message = "Campaña eliminada exitosamente", deleted = true, statusCode = 200 });
         }
     }
 }
