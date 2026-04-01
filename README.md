@@ -37,9 +37,7 @@ Se implementó el CRUD completo para posts en la ruta /v1/users/posts, permitien
 - **Validaciones**: Verifica que el usuario y la campaña (si se especifica) existan antes de crear o actualizar.
 - **Asociación opcional**: Los posts pueden estar ligados a campañas para promocionar causas.
 - **Respuestas JSON estructuradas**: Errores y respuestas siguen un formato consistente con códigos de estado y mensajes descriptivos.
-- **Arquitectura**: Incluye modelo Post, DTOs (CreatePostDto, GetPostDto, UpdatePostDto), interfaces, servicios, repositorios y controlador.
 
----
 
 ## Cómo ejecutar el proyecto localmente
 
