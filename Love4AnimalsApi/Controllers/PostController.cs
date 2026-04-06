@@ -25,13 +25,6 @@ namespace Love4AnimalsApi.Controllers
         /// <returns>Información del post</returns>
         /// <response code="200">Post encontrado</response>
         /// <response code="404">Post no encontrado</response>
-        /// <summary>
-        /// Obtiene un post por su ID
-        /// </summary>
-        /// <param name="id">ID del post</param>
-        /// <returns>Información del post</returns>
-        /// <response code="200">Post encontrado</response>
-        /// <response code="404">Post no encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType<GetPostDto>(200)]
         [ProducesResponseType(404)]
