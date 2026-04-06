@@ -19,6 +19,8 @@ builder.Services.AddScoped<ICampaignService, CampaignService>();
 builder.Services.AddSingleton<ICampaignRepository, CampaignRepository>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddSingleton<IPostRepository, PostRepository>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
 
 var app = builder.Build();
 

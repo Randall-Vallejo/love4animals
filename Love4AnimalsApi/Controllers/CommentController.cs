@@ -4,37 +4,37 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Love4AnimalsApi.Controllers
 {
-    [Route("v1/posts")]
+    [Route("v1/posts/{postId}/comments")]
     [ApiController]
-    public class PostController : ControllerBase
+    public class CommentController : ControllerBase
     {
-        private IPostService postService;
-        public PostController(IPostService postService)
+        private ICommentService commentService;
+        public CommentController(ICommentService commentService)
         {
-            this.postService = postService;
+            this.commentService = commentService;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<GetPostDto> GetPostById(int id)
+        public ActionResult<GetCommentDto> GetCommentById(int id)
         {
-            var post = this.postService.GetPostById(id);
+            var comment = this.commentService.GetCommentById(id);
             
-            if (post == null)
-                return NotFound(new { error = "Not Found", message = $"Post con ID {id} no encontrado", statusCode = 404 });
+            if (comment == null)
+                return NotFound(new { error = "Not Found", message = $"Comentario con ID {id} no encontrado", statusCode = 404 });
 
-            return Ok(post);
+            return Ok(comment);
         }
 
         [HttpPost("")]
-        public ActionResult<GetPostDto> CreatePost([FromBody] CreatePostDto createPostDto)
+        public ActionResult<GetCommentDto> CreateComment([FromBody] CreateCommentDto createCommentDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Bad Request", message = "Datos inválidos", details = ModelState, statusCode = 400 });
 
             try
             {
-                GetPostDto newPost = this.postService.CreatePost(createPostDto);
-                return Created("", newPost);
+                GetCommentDto newComment = this.commentService.CreateComment(createCommentDto);
+                return Created("", newComment);
             }
             catch (ArgumentException ex)
             {
@@ -43,18 +43,18 @@ namespace Love4AnimalsApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<GetPostDto> UpdatePost(int id, [FromBody] UpdatePostDto updatePostDto)
+        public ActionResult<GetCommentDto> UpdateComment(int id, [FromBody] UpdateCommentDto updateCommentDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Bad Request", message = "Datos inválidos", details = ModelState, statusCode = 400 });
 
-            if (id != updatePostDto.IdPost)
+            if (id != updateCommentDto.IdComment)
                 return BadRequest(new { error = "Bad Request", message = "El ID de la URL no coincide con el ID del body", statusCode = 400 });
 
             try
             {
-                GetPostDto updatedPost = this.postService.UpdatePost(updatePostDto);
-                return Ok(updatedPost);
+                GetCommentDto updatedComment = this.commentService.UpdateComment(updateCommentDto);
+                return Ok(updatedComment);
             }
             catch (ArgumentException ex)
             {
@@ -67,13 +67,13 @@ namespace Love4AnimalsApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeletePost(int id)
+        public ActionResult DeleteComment(int id)
         {
-            bool deleted = this.postService.DeletePost(id);
+            bool deleted = this.commentService.DeleteComment(id);
             if (!deleted)
-                return NotFound(new { error = "Not Found", message = $"Post con ID {id} no encontrado", statusCode = 404 });
+                return NotFound(new { error = "Not Found", message = $"Comentario con ID {id} no encontrado", statusCode = 404 });
 
-            return Ok(new { message = "Post eliminado exitosamente", deleted = true, statusCode = 200 });
+            return Ok(new { message = "Comentario eliminado exitosamente", deleted = true, statusCode = 200 });
         }
     }
 }
