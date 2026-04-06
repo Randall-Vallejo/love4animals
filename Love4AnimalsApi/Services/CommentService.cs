@@ -28,6 +28,17 @@ public class CommentService : ICommentService
         );
     }
 
+    public GetCommentDto? GetCommentByIdAndPostId(int commentId, int postId)
+    {
+        Comment? comment = commentRepository.GetCommentById(commentId);
+        if (comment == null || comment.IdPost != postId) return null;
+
+        return new GetCommentDto(
+            comment.IdComment, comment.Texto, comment.Fecha, 
+            comment.UsuarioId, comment.IdPost
+        );
+    }
+
     public GetCommentDto CreateComment(CreateCommentDto createCommentDto)
     {
         // Validar que el usuario existe
@@ -69,5 +80,14 @@ public class CommentService : ICommentService
     public bool DeleteComment(int id)
     {
         return commentRepository.DeleteComment(id);
+    }
+
+    public bool DeleteCommentByIdAndPostId(int commentId, int postId)
+    {
+        Comment? comment = commentRepository.GetCommentById(commentId);
+        if (comment == null || comment.IdPost != postId)
+            return false;
+
+        return commentRepository.DeleteComment(commentId);
     }
 }

@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Love4AnimalsApi.Controllers
 {
+    /// <summary>
+    /// Controlador para la gestión de campañas de recaudación en Love4Animals
+    /// </summary>
     [Route("v1/campaigns")]
     [ApiController]
+    [Tags("Campañas")]
     public class CampaignController : ControllerBase
     {
         private ICampaignService campaignService;
@@ -14,7 +18,16 @@ namespace Love4AnimalsApi.Controllers
             this.campaignService = campaignService;
         }
 
+        /// <summary>
+        /// Obtiene una campaña por su ID
+        /// </summary>
+        /// <param name="id">ID de la campaña</param>
+        /// <returns>Información de la campaña</returns>
+        /// <response code="200">Campaña encontrada</response>
+        /// <response code="404">Campaña no encontrada</response>
         [HttpGet("{id}")]
+        [ProducesResponseType<GetCampaignDto>(200)]
+        [ProducesResponseType(404)]
         public ActionResult<GetCampaignDto> GetCampaignById(int id)
         {
             var campaign = this.campaignService.GetCampaignById(id);
@@ -25,7 +38,16 @@ namespace Love4AnimalsApi.Controllers
             return Ok(campaign);
         }
 
+        /// <summary>
+        /// Crea una nueva campaña de recaudación
+        /// </summary>
+        /// <param name="createCampaignDto">Datos de la campaña a crear</param>
+        /// <returns>Campaña creada</returns>
+        /// <response code="201">Campaña creada exitosamente</response>
+        /// <response code="400">Datos inválidos</response>
         [HttpPost("")]
+        [ProducesResponseType<GetCampaignDto>(201)]
+        [ProducesResponseType(400)]
         public ActionResult<GetCampaignDto> CreateCampaign([FromBody] CreateCampaignDto createCampaignDto)
         {
             if (!ModelState.IsValid)
@@ -42,7 +64,19 @@ namespace Love4AnimalsApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza una campaña existente
+        /// </summary>
+        /// <param name="id">ID de la campaña a actualizar</param>
+        /// <param name="updateCampaignDto">Datos actualizados de la campaña</param>
+        /// <returns>Campaña actualizada</returns>
+        /// <response code="200">Campaña actualizada exitosamente</response>
+        /// <response code="400">Datos inválidos o ID no coincide</response>
+        /// <response code="404">Campaña no encontrada</response>
         [HttpPut("{id}")]
+        [ProducesResponseType<GetCampaignDto>(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public ActionResult<GetCampaignDto> UpdateCampaign(int id, [FromBody] UpdateCampaignDto updateCampaignDto)
         {
             if (!ModelState.IsValid)
@@ -66,7 +100,16 @@ namespace Love4AnimalsApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Elimina una campaña del sistema
+        /// </summary>
+        /// <param name="id">ID de la campaña a eliminar</param>
+        /// <returns>Confirmación de eliminación</returns>
+        /// <response code="200">Campaña eliminada exitosamente</response>
+        /// <response code="404">Campaña no encontrada</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public ActionResult DeleteCampaign(int id)
         {
             bool deleted = this.campaignService.DeleteCampaign(id);

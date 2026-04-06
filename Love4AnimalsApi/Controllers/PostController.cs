@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Love4AnimalsApi.Controllers
 {
+    /// <summary>
+    /// Controlador para la gestión de posts en Love4Animals
+    /// </summary>
     [Route("v1/posts")]
     [ApiController]
+    [Tags("Posts")]
     public class PostController : ControllerBase
     {
         private IPostService postService;
@@ -14,7 +18,23 @@ namespace Love4AnimalsApi.Controllers
             this.postService = postService;
         }
 
+        /// <summary>
+        /// Obtiene un post por su ID
+        /// </summary>
+        /// <param name="id">ID del post</param>
+        /// <returns>Información del post</returns>
+        /// <response code="200">Post encontrado</response>
+        /// <response code="404">Post no encontrado</response>
+        /// <summary>
+        /// Obtiene un post por su ID
+        /// </summary>
+        /// <param name="id">ID del post</param>
+        /// <returns>Información del post</returns>
+        /// <response code="200">Post encontrado</response>
+        /// <response code="404">Post no encontrado</response>
         [HttpGet("{id}")]
+        [ProducesResponseType<GetPostDto>(200)]
+        [ProducesResponseType(404)]
         public ActionResult<GetPostDto> GetPostById(int id)
         {
             var post = this.postService.GetPostById(id);
@@ -25,7 +45,16 @@ namespace Love4AnimalsApi.Controllers
             return Ok(post);
         }
 
+        /// <summary>
+        /// Crea un nuevo post
+        /// </summary>
+        /// <param name="createPostDto">Datos del post a crear</param>
+        /// <returns>Post creado</returns>
+        /// <response code="201">Post creado exitosamente</response>
+        /// <response code="400">Datos inválidos</response>
         [HttpPost("")]
+        [ProducesResponseType<GetPostDto>(201)]
+        [ProducesResponseType(400)]
         public ActionResult<GetPostDto> CreatePost([FromBody] CreatePostDto createPostDto)
         {
             if (!ModelState.IsValid)
@@ -42,7 +71,19 @@ namespace Love4AnimalsApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza un post existente
+        /// </summary>
+        /// <param name="id">ID del post a actualizar</param>
+        /// <param name="updatePostDto">Datos actualizados del post</param>
+        /// <returns>Post actualizado</returns>
+        /// <response code="200">Post actualizado exitosamente</response>
+        /// <response code="400">Datos inválidos o ID no coincide</response>
+        /// <response code="404">Post no encontrado</response>
         [HttpPut("{id}")]
+        [ProducesResponseType<GetPostDto>(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public ActionResult<GetPostDto> UpdatePost(int id, [FromBody] UpdatePostDto updatePostDto)
         {
             if (!ModelState.IsValid)
@@ -66,7 +107,16 @@ namespace Love4AnimalsApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Elimina un post del sistema
+        /// </summary>
+        /// <param name="id">ID del post a eliminar</param>
+        /// <returns>Confirmación de eliminación</returns>
+        /// <response code="200">Post eliminado exitosamente</response>
+        /// <response code="404">Post no encontrado</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public ActionResult DeletePost(int id)
         {
             bool deleted = this.postService.DeletePost(id);
