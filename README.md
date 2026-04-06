@@ -27,7 +27,7 @@ Se estructuró el motor para la recaudación de fondos dentro de la ruta /v1/cam
 - Eliminar Campaña (DELETE): Da de baja una causa archivada del sistema usando su ID específico.
 
 ### 3. Gestión de Posts (L4A-03)
-Se implementó el CRUD completo para posts en la ruta /v1/users/posts, permitiendo publicar contenido que puede asociarse opcionalmente a campañas:
+Se implementó el CRUD completo para posts en la ruta /v1/posts, permitiendo publicar contenido que puede asociarse opcionalmente a campañas:
 - Obtener Post por ID (GET): Recupera un post específico mediante su ID.
 - Crear Post (POST): Publica un nuevo post vinculado a un usuario existente, con opción de asociarlo a una campaña.
 - Actualizar Post (PUT): Modifica el contenido de un post existente.
@@ -38,6 +38,20 @@ Se implementó el CRUD completo para posts en la ruta /v1/users/posts, permitien
 - **Asociación opcional**: Los posts pueden estar ligados a campañas para promocionar causas.
 - **Respuestas JSON estructuradas**: Errores y respuestas siguen un formato consistente con códigos de estado y mensajes descriptivos.
 
+### 4. Gestión de Comentarios (L4A-04)
+Se implementó el CRUD completo para comentarios en la ruta /v1/posts/{postId}/comments, permitiendo a los usuarios comentar en posts específicos:
+- Obtener Comentario por ID (GET): Recupera un comentario específico mediante su ID.
+- Crear Comentario (POST): Publica un nuevo comentario vinculado a un usuario y un post existentes.
+- Actualizar Comentario (PUT): Modifica el contenido de un comentario existente.
+- Eliminar Comentario (DELETE): Remueve un comentario del sistema.
+
+#### Características adicionales:
+- **Validaciones**: Verifica que el usuario y el post existan antes de crear o actualizar comentarios.
+- **Rutas anidadas**: Los comentarios están organizados bajo posts específicos, reflejando la relación de la base de datos.
+- **Respuestas JSON estructuradas**: Todas las operaciones devuelven respuestas JSON con códigos de estado descriptivos.
+- **Arquitectura completa**: Incluye modelo Comment, DTOs, interfaces, servicios, repositorios y controlador.
+
+---
 
 ## Cómo ejecutar el proyecto localmente
 
