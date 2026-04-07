@@ -8,61 +8,6 @@
   },
   "item": [
     {
-      "name": "Obtener campaigns",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:5239/v1/campaigns",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "5239",
-          "path": [
-            "v1",
-            "campaigns"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Crear campaings",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"Titulo\": \"Campaña de Vacunas para Perros\",\r\n  \"Descripcion\": \"Ayuda a vacunar a 100 perros callejeros en la ciudad de Lima\",\r\n  \"MetaMonto\": 3000.00,\r\n  \"FechaInicio\": \"2026-04-01T00:00:00\",\r\n  \"FechaFin\": \"2026-06-01T23:59:59\",\r\n  \"Estado\": \"Activa\",\r\n  \"UsuarioId\": 1\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:5239/v1/campaigns",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "5239",
-          "path": [
-            "v1",
-            "campaigns"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
       "name": "Obtener Usuario",
       "request": {
         "method": "GET",
@@ -112,63 +57,6 @@
           "path": [
             "v1",
             "users"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Eliminar Campaña",
-      "request": {
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:5239/v1/campaigns/2",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "5239",
-          "path": [
-            "v1",
-            "campaigns",
-            "2"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Actualizar Campaña",
-      "request": {
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"IdCampania\": 2,\r\n  \"Titulo\": \"Campaña actualizada\",\r\n  \"Descripcion\": \"Descripción nueva\",\r\n  \"MetaMonto\": 4000.00,\r\n  \"MontoRecaudado\": 500.00,\r\n  \"FechaInicio\": \"2026-04-01T00:00:00\",\r\n  \"FechaFin\": \"2026-06-01T00:00:00\",\r\n  \"Estado\": \"Activa\",\r\n  \"UsuarioId\": 1\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:5239/v1/campaigns/2",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "5239",
-          "path": [
-            "v1",
-            "campaigns",
-            "2"
           ]
         }
       },
@@ -232,6 +120,139 @@
       "response": []
     },
     {
+      "name": "Obtener Campaña",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/campaigns",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "campaigns"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear Campaña",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"Titulo\": \"Campaña de Vacunas para Perros\",\r\n  \"Descripcion\": \"Ayuda a vacunar a 100 perros callejeros en la ciudad de Lima\",\r\n  \"MetaMonto\": 3000.00,\r\n  \"FechaInicio\": \"2026-04-01T00:00:00\",\r\n  \"FechaFin\": \"2026-06-01T23:59:59\",\r\n  \"Estado\": \"Activa\",\r\n  \"UsuarioId\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/campaigns",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "campaigns"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Actualizar Campaña",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"IdCampania\": 2,\r\n  \"Titulo\": \"Campaña actualizada\",\r\n  \"Descripcion\": \"Descripción nueva\",\r\n  \"MetaMonto\": 4000.00,\r\n  \"MontoRecaudado\": 500.00,\r\n  \"FechaInicio\": \"2026-04-01T00:00:00\",\r\n  \"FechaFin\": \"2026-06-01T00:00:00\",\r\n  \"Estado\": \"Activa\",\r\n  \"UsuarioId\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/campaigns/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "campaigns",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar Campaña",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/campaigns/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "campaigns",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Obtener Post",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/posts/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "posts",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "Crear Post",
       "request": {
         "method": "POST",
@@ -252,7 +273,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:5239/v1/users/posts",
+          "raw": "http://localhost:5239/v1/posts",
           "protocol": "http",
           "host": [
             "localhost"
@@ -260,30 +281,7 @@
           "port": "5239",
           "path": [
             "v1",
-            "users",
             "posts"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Obtener Post",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:5239/v1/users/posts/3",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "5239",
-          "path": [
-            "v1",
-            "users",
-            "posts",
-            "3"
           ]
         }
       },
@@ -302,13 +300,34 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"titulo\": \"Ayuda a los monos en SCZ\",\r\n    \"descripcion\": \"En esta campaña estamos recolectando fondos para construir un refugio para monos. ¡Únete y comparte!\",\r\n    \"fotoUrl\": \"https://example.com/gatitos.jpg\",\r\n    \"usuarioId\": 1,\r\n    \"idCampania\": 7\r\n}",
+          "raw": "{\r\n    \"titulo\": \"Ayuda a los monos en SCZ\",\r\n    \"descripcion\": \"En esta campaña estamos recolectando fondos para construir un refugio para monos. ¡Únete y comparte!\",\r\n    \"fotoUrl\": \"https://example.com/gatitos.jpg\",\r\n    \"usuarioId\": 2,\r\n    \"idCampania\": 7\r\n}",
           "options": {
             "raw": {
               "language": "json"
             }
           }
         },
+        "url": {
+          "raw": "http://localhost:5239/v1/posts/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "posts",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar Post",
+      "request": {
+        "method": "DELETE",
+        "header": [],
         "url": {
           "raw": "http://localhost:5239/v1/users/posts/2",
           "protocol": "http",
@@ -327,12 +346,12 @@
       "response": []
     },
     {
-      "name": "Eliminar Post",
+      "name": "Obtener Comentario",
       "request": {
-        "method": "POST",
+        "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5239/v1/users/posts/2",
+          "raw": "http://localhost:5239/v1/posts/1/comments/1",
           "protocol": "http",
           "host": [
             "localhost"
@@ -340,9 +359,108 @@
           "port": "5239",
           "path": [
             "v1",
-            "users",
             "posts",
-            "2"
+            "1",
+            "comments",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear Comentario",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"Texto\": \"Comentario de ejemplo\",\r\n  \"UsuarioId\": 1,\r\n  \"IdPost\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/posts/1/comments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "posts",
+            "1",
+            "comments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Actualizar Comentario",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"IdComment\": 1,\r\n  \"Texto\": \"Comentario actualizado\",\r\n  \"Fecha\": \"2026-04-07T10:30:00\",\r\n  \"UsuarioId\": 1,\r\n  \"IdPost\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5239/v1/posts/1/comments/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "posts",
+            "1",
+            "comments",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar Comentario",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5239/v1/posts/4/comments/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5239",
+          "path": [
+            "v1",
+            "posts",
+            "4",
+            "comments",
+            "1"
           ]
         }
       },
