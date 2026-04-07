@@ -52,15 +52,15 @@ Se implementó el CRUD completo para comentarios en la ruta /v1/posts/{postId}/c
 - **Arquitectura completa**: Incluye modelo Comment, DTOs, interfaces, servicios, repositorios y controlador.
 
 ### 5. Documentación de API (L4A-05)
-Se implementó documentación completa de la API usando Swagger/OpenAPI:
-- **Interfaz Swagger UI**: Disponible en `/swagger` durante desarrollo para explorar y probar todos los endpoints.
-- **Documentación OpenAPI**: Especificación completa en formato JSON disponible en `/swagger/v1/swagger.json`.
+Se implementó documentación completa de la API usando Scalar/OpenAPI:
+- **Interfaz Scalar**: Disponible en `/scalar` durante desarrollo para explorar y probar todos los endpoints.
+- **Documentación OpenAPI**: Especificación completa en formato JSON disponible en `/openapi/v1.json`.
 - **Comentarios XML**: Documentación detallada de controladores, métodos y tipos de respuesta.
 - **Información del API**: Título, versión, descripción y contacto de la ONG SafeWildLife.
 
 #### Acceso a la documentación:
-- **URL de Swagger UI**: `http://localhost:5239/swagger` (desarrollo)
-- **Especificación OpenAPI**: `http://localhost:5239/swagger/v1/swagger.json`
+- **URL de Scalar**: `http://localhost:5239/scalar` (desarrollo)
+- **Especificación OpenAPI**: `http://localhost:5239/openapi/v1.json`
 
 ---
 
