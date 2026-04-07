@@ -1,6 +1,7 @@
 using Love4AnimalsApi.Interfaces;
 using Love4AnimalsApi.Repositories;
 using Love4AnimalsApi.Services;
+using Scalar.AspNetCore;
 using System.IO;
 using System.Text.Json;
 
@@ -13,29 +14,26 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = null; 
     });
 
-// Configurar Swagger/OpenAPI
+// Configurar Scalar/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddOpenApi(options =>
 {
-    options.SwaggerDoc("v1", new()
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
-        Title = "Love4Animals API",
-        Version = "v1",
-        Description = "API para la plataforma Love4Animals - Red social de conservación animal",
-        Contact = new()
+        document.Info = new()
         {
-            Name = "SafeWildLife ONG",
-            Email = "contact@safewildlife.org"
-        }
+            Title = "Love4Animals API",
+            Version = "v1",
+            Description = "API para la plataforma Love4Animals - Red social de conservación animal",
+            Contact = new()
+            {
+                Name = "SafeWildLife ONG",
+                Email = "contact@safewildlife.org"
+            }
+        };
+        return Task.CompletedTask;
     });
-
-    // Incluir comentarios XML
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath);
 });
-
-builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
@@ -51,11 +49,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    app.MapScalarApiReference(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Love4Animals API v1");
-        options.RoutePrefix = "swagger";
+        options.Title = "Love4Animals API";
+        options.Theme = ScalarTheme.Mars;
+        options.DefaultOpenAllTags = true;
     });
 }
 
