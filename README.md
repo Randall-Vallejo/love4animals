@@ -62,6 +62,22 @@ Se implementó documentación completa de la API usando Scalar/OpenAPI:
 - **URL de Scalar**: `http://localhost:5239/scalar` (desarrollo)
 - **Especificación OpenAPI**: `http://localhost:5239/openapi/v1.json`
 
+### 6. Gestión de Donaciones (L4A-06)
+Se implementó el CRUD completo para donaciones en la ruta /v1/donations, permitiendo a usuarios registrados realizar donaciones a campañas específicas:
+- Obtener Donación por ID (GET): Recupera una donación específica mediante su ID.
+- Crear Donación (POST): Registra una nueva donación vinculada a un usuario existente, una campaña y un método de pago.
+- Actualizar Donación (PUT): Modifica los detalles de una donación existente.
+- Eliminar Donación (DELETE): Remueve una donación del sistema.
+
+#### Características adicionales:
+- **Validación de rol**: Solo usuarios con rol "User" pueden realizar donaciones.
+- **Validaciones relacionales**: Verifica que el usuario y la campaña existan antes de procesarla.
+- **Comprobante de donación**: Soporta almacenamiento de imágenes, PDFs o referencias de comprobantes como texto (hasta 50,000 caracteres).
+- **Métodos de pago**: Registra el método de pago utilizado (transferencia, tarjeta, etc.).
+- **Trazabilidad**: Cada donación vincula usuario, campaña, monto, fecha y comprobante.
+- **Respuestas JSON estructuradas**: Todas las operaciones devuelven respuestas JSON con códigos de estado descriptivos.
+- **Arquitectura completa**: Incluye modelo Donation, DTOs (Create/Update/Get), interfaces, servicios, repositorios y controlador.
+
 ---
 
 ## Cómo ejecutar el proyecto localmente
