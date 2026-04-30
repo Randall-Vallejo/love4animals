@@ -21,4 +21,9 @@ public class Post
     public DateTime Fecha { get; set; }
     public int UsuarioId { get; set; }
     public int? IdCampania { get; set; }
+
+    // Propiedades de navegación para EF Core
+    public User? Usuario { get; set; }
+    public Campaign? Campania { get; set; }
+    public ICollection<Comment> Comments { get; set; } = [];
 }

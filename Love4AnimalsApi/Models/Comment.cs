@@ -17,4 +17,8 @@ public class Comment
     public DateTime Fecha { get; set; }
     public int UsuarioId { get; set; }
     public int IdPost { get; set; }
+
+    // Propiedades de navegación para EF Core
+    public User? Usuario { get; set; }
+    public Post? Post { get; set; }
 }

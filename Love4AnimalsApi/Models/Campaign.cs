@@ -25,4 +25,9 @@ public class Campaign
     public DateTime FechaFin { get; set; }
     public string Estado { get; set; }
     public int UsuarioId { get; set; }
+
+    // Propiedades de navegación para EF Core
+    public User? Usuario { get; set; }
+    public ICollection<Post> Posts { get; set; } = [];
+    public ICollection<Donation> Donations { get; set; } = [];
 }

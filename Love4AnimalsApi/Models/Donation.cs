@@ -20,4 +20,8 @@ public class Donation
     public DateTime Fecha { get; set; }
     public int UsuarioId { get; set; }
     public int IdCampania { get; set; }
+
+    // Propiedades de navegación para EF Core
+    public User? Usuario { get; set; }
+    public Campaign? Campania { get; set; }
 }
