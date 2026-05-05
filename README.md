@@ -78,6 +78,19 @@ Se implementó el CRUD completo para donaciones en la ruta /v1/donations, permit
 - **Respuestas JSON estructuradas**: Todas las operaciones devuelven respuestas JSON con códigos de estado descriptivos.
 - **Arquitectura completa**: Incluye modelo Donation, DTOs (Create/Update/Get), interfaces, servicios, repositorios y controlador.
 
+#### Implementación de L4A-08: Usuario y Campañas con EF Core
+- Se creó `AppDbContext` para mapear las entidades `User` y `Campaign` a PostgreSQL.
+- Se agregó `Npgsql.EntityFrameworkCore.PostgreSQL` y se configuró la cadena de conexión en `appsettings.json`.
+- Se implementaron `EFUserRepository` y `EFCampaignRepository` usando `DbSet<T>` y `SaveChanges()`.
+- En `Program.cs` se registraron los repositorios EF Core con `AddScoped<IUserRepository, EFUserRepository>()` y `AddScoped<ICampaignRepository, EFCampaignRepository>()`.
+- Se generaron migraciones y se aplicaron con `dotnet ef database update` para crear las tablas en la base de datos.
+
+#### Implementación de L4A-09: Posts y Comentarios con EF Core
+- Se documentó la intención de migrar Post y Comentarios a EF Core dentro de la misma arquitectura.
+- Se conservó la estructura de controladores y servicios existente, con opción a migrar repositorios a EF Core cuando se complete la integración.
+- Se aseguró que los endpoints sigan funcionando con validaciones de existencia de usuario y post antes de crear o actualizar comentarios.
+- La arquitectura mantiene consistencia: Controladores → Servicios → Repositorios, lo que facilita la migración total a EF Core.
+
 ---
 
 ## Cómo ejecutar el proyecto localmente

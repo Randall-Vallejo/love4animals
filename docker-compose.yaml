@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:18.3-alpine
+    container_name: postgres-love4animals
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: test
+      POSTGRES_USER: test
+      POSTGRES_DB: love4animals
+    ports:
+      - "55433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/18/docker
+    networks:
+      - love4animals_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test -d love4animals"]  # 🔥 AQUÍ ESTÁ EL FIX
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:9.14.0
+    container_name: pgadmin-ui
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@test.com
+      PGADMIN_DEFAULT_PASSWORD: test
+    ports:
+      - "80:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - love4animals_network
+
+  api:
+    build:
+      context: ./Love4AnimalsApi
+      dockerfile: Dockerfile
+    container_name: love4animals_api
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080   # 🔥 importante para que responda
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=love4animals;Username=test;Password=test
+    ports:
+      - "5239:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - love4animals_network
+
+networks:
+  love4animals_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

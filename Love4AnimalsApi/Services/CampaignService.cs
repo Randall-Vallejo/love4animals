@@ -29,7 +29,6 @@ public class CampaignService : ICampaignService
 
     public GetCampaignDto CreateCampaign(CreateCampaignDto createCampaignDto)
     {
-        // Validar que el usuario existe
         User? user = userRepository.GetUserById(createCampaignDto.UsuarioId);
         if (user == null)
             throw new ArgumentException("Usuario no encontrado");
@@ -41,7 +40,6 @@ public class CampaignService : ICampaignService
 
     public GetCampaignDto UpdateCampaign(UpdateCampaignDto updateCampaignDto)
     {
-        // Validar que el usuario existe
         User? user = userRepository.GetUserById(updateCampaignDto.UsuarioId);
         if (user == null)
             throw new ArgumentException("Usuario no encontrado");

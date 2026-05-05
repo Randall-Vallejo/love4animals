@@ -30,7 +30,6 @@ public class PostService : IPostService
 
     public GetPostDto CreatePost(CreatePostDto createPostDto)
     {
-        // Validar que el usuario existe
         User? user = userRepository.GetUserById(createPostDto.UsuarioId);
         Campaign? campaign = null;
         if (createPostDto.IdCampania.HasValue)
@@ -38,7 +37,6 @@ public class PostService : IPostService
             campaign = campaignRepository.GetCampaignById(createPostDto.IdCampania.Value);
         }
 
-        // Acumular errores
         List<string> errors = new();
         if (user == null) errors.Add("Usuario no encontrado");
         if (createPostDto.IdCampania.HasValue && campaign == null) errors.Add("Campaña no encontrada");
@@ -53,7 +51,6 @@ public class PostService : IPostService
 
     public GetPostDto UpdatePost(UpdatePostDto updatePostDto)
     {
-        // Validar que el usuario existe
         User? user = userRepository.GetUserById(updatePostDto.UsuarioId);
         Campaign? campaign = null;
         if (updatePostDto.IdCampania.HasValue)
@@ -61,7 +58,6 @@ public class PostService : IPostService
             campaign = campaignRepository.GetCampaignById(updatePostDto.IdCampania.Value);
         }
 
-        // Acumular errores
         List<string> errors = new();
         if (user == null) errors.Add("Usuario no encontrado");
         if (updatePostDto.IdCampania.HasValue && campaign == null) errors.Add("Campaña no encontrada");

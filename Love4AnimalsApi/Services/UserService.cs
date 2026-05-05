@@ -13,7 +13,6 @@ public class UserService : IUserService
         this.userRepository = userRepository;
     }
 
-    // NUEVA LÓGICA: Obtener usuario por ID
     public GetUserDto? GetUserById(int id)
     {
         User? user = userRepository.GetUserById(id);

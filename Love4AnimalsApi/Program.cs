@@ -9,7 +9,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
+//5234
 // ═══════════════════════════════════════════════════════════════
 // Configuración de Entity Framework Core con PostgreSQL
 // ═══════════════════════════════════════════════════════════════
