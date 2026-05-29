@@ -5,6 +5,7 @@ namespace Love4AnimalsApi.Interfaces;
 public interface IDonationService
 {
     public GetDonationDto? GetDonationById(int id);
+    public IEnumerable<GetDonationDto> GetAllDonations();
     public GetDonationDto CreateDonation(CreateDonationDto createDonationDto);
     public GetDonationDto UpdateDonation(UpdateDonationDto updateDonationDto);
     public bool DeleteDonation(int id);

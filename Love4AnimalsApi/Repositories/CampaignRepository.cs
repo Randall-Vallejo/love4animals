@@ -12,14 +12,19 @@ public class CampaignRepository : ICampaignRepository
 
     public CampaignRepository()
     {
-        this.Campaigns = [];
-        Campaign newCampaign = new(1, "Campaña de Refugio", "Ayuda a construir un refugio para animales abandonados", 5000.00m, 1250.50m, DateTime.Now.AddDays(-10), DateTime.Now.AddDays(20), "Activa", 1);
+        this.Campaigns = new List<Campaign>();
+        Campaign newCampaign = new(1, "Campaña de Refugio", "Ayuda a construir un refugio para animales abandonados", 5000.00m, 1250.50m, DateTime.UtcNow.AddDays(-10), DateTime.UtcNow.AddDays(20), "Activa", 1);
         this.Campaigns.Add(newCampaign);
     }
 
     public Campaign? GetCampaignById(int id)
     {
         return this.Campaigns.FirstOrDefault(c => c.IdCampania == id);
+    }
+
+    public IEnumerable<Campaign> GetAllCampaigns()
+    {
+        return this.Campaigns.OrderByDescending(c => c.FechaInicio).ToList();
     }
 
     public Campaign CreateCampaign(Campaign campaign)

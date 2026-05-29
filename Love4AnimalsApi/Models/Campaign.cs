@@ -28,6 +28,6 @@ public class Campaign
 
     // Propiedades de navegación para EF Core
     public User? Usuario { get; set; }
-    public ICollection<Post> Posts { get; set; } = [];
-    public ICollection<Donation> Donations { get; set; } = [];
+    public ICollection<Post> Posts { get; set; } = new List<Post>();
+    public ICollection<Donation> Donations { get; set; } = new List<Donation>();
 }

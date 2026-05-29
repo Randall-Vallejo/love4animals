@@ -38,7 +38,11 @@ public class AppDbContext : DbContext
             e.Property(u => u.Id).ValueGeneratedOnAdd(); // Auto-incremento
             e.Property(u => u.Name).HasMaxLength(100).IsRequired();
             e.Property(u => u.Email).HasMaxLength(255).IsRequired();
-            e.Property(u => u.Password).HasMaxLength(255).IsRequired();
+            e.HasIndex(u => u.Email).IsUnique();
+            e.Property(u => u.PasswordHash)
+                .HasColumnName("Password")
+                .HasMaxLength(255)
+                .IsRequired();
             e.Property(u => u.Rol).HasMaxLength(50).IsRequired();
 
             // Un usuario crea muchas campañas
@@ -78,6 +82,8 @@ public class AppDbContext : DbContext
             e.Property(c => c.MetaMonto).HasPrecision(18, 2); // Decimal con 2 decimales
             e.Property(c => c.MontoRecaudado).HasPrecision(18, 2);
             e.Property(c => c.Estado).HasMaxLength(50).IsRequired();
+            e.Property(c => c.FechaInicio).HasColumnType("timestamp with time zone");
+            e.Property(c => c.FechaFin).HasColumnType("timestamp with time zone");
 
             // Relación con Usuario (FK)
             e.HasOne(c => c.Usuario)
@@ -108,6 +114,7 @@ public class AppDbContext : DbContext
             e.Property(p => p.Titulo).HasMaxLength(300).IsRequired();
             e.Property(p => p.Descripcion).HasMaxLength(5000).IsRequired();
             e.Property(p => p.FotoUrl).HasMaxLength(1000);
+            e.Property(p => p.Fecha).HasColumnType("timestamp with time zone");
 
             // Relación con Usuario (FK)
             e.HasOne(p => p.Usuario)
@@ -136,6 +143,7 @@ public class AppDbContext : DbContext
             e.HasKey(c => c.IdComment);
             e.Property(c => c.IdComment).ValueGeneratedOnAdd();
             e.Property(c => c.Texto).HasMaxLength(2000).IsRequired();
+            e.Property(c => c.Fecha).HasColumnType("timestamp with time zone");
 
             // Relación con Usuario (FK)
             e.HasOne(c => c.Usuario)
@@ -160,6 +168,7 @@ public class AppDbContext : DbContext
             e.Property(d => d.Monto).HasPrecision(18, 2).IsRequired();
             e.Property(d => d.MetodoPago).HasMaxLength(100).IsRequired();
             e.Property(d => d.Comprobante).HasMaxLength(50000); // Para base64 de imágenes/PDFs
+            e.Property(d => d.Fecha).HasColumnType("timestamp with time zone");
 
             // Relación con Usuario (FK)
             e.HasOne(d => d.Usuario)

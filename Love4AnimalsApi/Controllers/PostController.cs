@@ -1,6 +1,7 @@
 using Love4AnimalsApi.Dtos;
 using Love4AnimalsApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Love4AnimalsApi.Controllers
 {
@@ -12,10 +13,22 @@ namespace Love4AnimalsApi.Controllers
     [Tags("Posts")]
     public class PostController : ControllerBase
     {
-        private IPostService postService;
+        private readonly IPostService postService;
+
         public PostController(IPostService postService)
         {
             this.postService = postService;
+        }
+
+        /// <summary>
+        /// Obtiene la lista de posts (cacheada)
+        /// </summary>
+        [HttpGet("")]
+        [ProducesResponseType(typeof(IEnumerable<GetPostDto>), 200)]
+        public ActionResult<IEnumerable<GetPostDto>> GetAllPosts()
+        {
+            var posts = postService.GetAllPosts();
+            return Ok(posts);
         }
 
         /// <summary>

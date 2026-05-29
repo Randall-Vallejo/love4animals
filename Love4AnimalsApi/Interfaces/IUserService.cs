@@ -8,4 +8,5 @@ public interface IUserService
     public GetUserDto CreateUser(CreateUserDto createUserDto);
     public GetUserDto UpdateUser(UpdateUserDto updateUserDto);
     public bool DeleteUser(int id);
+    public LoginResponseDto? LoginUser(LoginDto loginDto);
 }

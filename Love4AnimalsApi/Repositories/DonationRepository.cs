@@ -12,14 +12,19 @@ public class DonationRepository : IDonationRepository
 
     public DonationRepository()
     {
-        this.Donations = [];
-        Donation newDonation = new(1, 150.00m, "Tarjeta de crédito", "COMPROBANTE-12345", DateTime.Now, 1, 1);
+        this.Donations = new List<Donation>();
+        Donation newDonation = new(1, 150.00m, "Tarjeta de crédito", "COMPROBANTE-12345", DateTime.UtcNow, 1, 1);
         this.Donations.Add(newDonation);
     }
 
     public Donation? GetDonationById(int id)
     {
         return this.Donations.FirstOrDefault(d => d.IdDonation == id);
+    }
+
+    public IEnumerable<Donation> GetAllDonations()
+    {
+        return this.Donations.OrderByDescending(d => d.Fecha).ToList();
     }
 
     public Donation CreateDonation(Donation donation)

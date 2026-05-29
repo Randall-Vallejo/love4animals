@@ -53,7 +53,7 @@ public class CommentService : ICommentService
         if (errors.Any())
             throw new ArgumentException(string.Join("; ", errors));
 
-        Comment newComment = new(0, createCommentDto.Texto, DateTime.Now, createCommentDto.UsuarioId, createCommentDto.IdPost);
+        Comment newComment = new(0, createCommentDto.Texto, DateTime.UtcNow, createCommentDto.UsuarioId, createCommentDto.IdPost);
         Comment createdComment = commentRepository.CreateComment(newComment);
         return new GetCommentDto(createdComment.IdComment, createdComment.Texto, createdComment.Fecha, createdComment.UsuarioId, createdComment.IdPost);
     }
@@ -72,7 +72,8 @@ public class CommentService : ICommentService
         if (errors.Any())
             throw new ArgumentException(string.Join("; ", errors));
 
-        Comment commentToUpdate = new(updateCommentDto.IdComment, updateCommentDto.Texto, updateCommentDto.Fecha, updateCommentDto.UsuarioId, updateCommentDto.IdPost);
+        DateTime fechaUtc = updateCommentDto.Fecha.ToUniversalTime();
+        Comment commentToUpdate = new(updateCommentDto.IdComment, updateCommentDto.Texto, fechaUtc, updateCommentDto.UsuarioId, updateCommentDto.IdPost);
         Comment updatedComment = commentRepository.UpdateComment(commentToUpdate);
         return new GetCommentDto(updatedComment.IdComment, updatedComment.Texto, updatedComment.Fecha, updatedComment.UsuarioId, updatedComment.IdPost);
     }

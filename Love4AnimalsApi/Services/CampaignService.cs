@@ -27,13 +27,25 @@ public class CampaignService : ICampaignService
         );
     }
 
+    public IEnumerable<GetCampaignDto> GetAllCampaigns()
+    {
+        var campaigns = campaignRepository.GetAllCampaigns();
+        return campaigns.Select(c => new GetCampaignDto(
+            c.IdCampania, c.Titulo, c.Descripcion,
+            c.MetaMonto, c.MontoRecaudado, c.FechaInicio,
+            c.FechaFin, c.Estado, c.UsuarioId
+        ));
+    }
+
     public GetCampaignDto CreateCampaign(CreateCampaignDto createCampaignDto)
     {
         User? user = userRepository.GetUserById(createCampaignDto.UsuarioId);
         if (user == null)
             throw new ArgumentException("Usuario no encontrado");
 
-        Campaign newCampaign = new(0, createCampaignDto.Titulo, createCampaignDto.Descripcion, createCampaignDto.MetaMonto, 0.00m, createCampaignDto.FechaInicio, createCampaignDto.FechaFin, createCampaignDto.Estado, createCampaignDto.UsuarioId);
+        DateTime fechaInicioUtc = DateTime.UtcNow;
+        DateTime fechaFinUtc = createCampaignDto.FechaFin.ToUniversalTime();
+        Campaign newCampaign = new(0, createCampaignDto.Titulo, createCampaignDto.Descripcion, createCampaignDto.MetaMonto, 0.00m, fechaInicioUtc, fechaFinUtc, createCampaignDto.Estado, createCampaignDto.UsuarioId);
         Campaign createdCampaign = campaignRepository.CreateCampaign(newCampaign);
         return new GetCampaignDto(createdCampaign.IdCampania, createdCampaign.Titulo, createdCampaign.Descripcion, createdCampaign.MetaMonto, createdCampaign.MontoRecaudado, createdCampaign.FechaInicio, createdCampaign.FechaFin, createdCampaign.Estado, createdCampaign.UsuarioId);
     }
@@ -44,7 +56,9 @@ public class CampaignService : ICampaignService
         if (user == null)
             throw new ArgumentException("Usuario no encontrado");
 
-        Campaign campaignToUpdate = new(updateCampaignDto.IdCampania, updateCampaignDto.Titulo, updateCampaignDto.Descripcion, updateCampaignDto.MetaMonto, updateCampaignDto.MontoRecaudado, updateCampaignDto.FechaInicio, updateCampaignDto.FechaFin, updateCampaignDto.Estado, updateCampaignDto.UsuarioId);
+        DateTime fechaInicioUtc = updateCampaignDto.FechaInicio.ToUniversalTime();
+        DateTime fechaFinUtc = updateCampaignDto.FechaFin.ToUniversalTime();
+        Campaign campaignToUpdate = new(updateCampaignDto.IdCampania, updateCampaignDto.Titulo, updateCampaignDto.Descripcion, updateCampaignDto.MetaMonto, updateCampaignDto.MontoRecaudado, fechaInicioUtc, fechaFinUtc, updateCampaignDto.Estado, updateCampaignDto.UsuarioId);
         Campaign updatedCampaign = campaignRepository.UpdateCampaign(campaignToUpdate);
         return new GetCampaignDto(updatedCampaign.IdCampania, updatedCampaign.Titulo, updatedCampaign.Descripcion, updatedCampaign.MetaMonto, updatedCampaign.MontoRecaudado, updatedCampaign.FechaInicio, updatedCampaign.FechaFin, updatedCampaign.Estado, updatedCampaign.UsuarioId);
     }

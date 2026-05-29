@@ -40,22 +40,44 @@ namespace Love4AnimalsApi.Controllers
         }
 
         /// <summary>
-        /// Crea un nuevo usuario
+        /// Registra un nuevo usuario en el sistema
         /// </summary>
-        /// <param name="createUserDto">Datos del usuario a crear</param>
-        /// <returns>Usuario creado</returns>
-        /// <response code="201">Usuario creado exitosamente</response>
+        /// <param name="createUserDto">Datos del usuario a registrar</param>
+        /// <returns>Usuario registrado</returns>
+        /// <response code="201">Usuario registrado exitosamente</response>
         /// <response code="400">Datos inválidos</response>
-        [HttpPost("")]
+        [HttpPost("register")]
         [ProducesResponseType<GetUserDto>(201)]
         [ProducesResponseType(400)]
-        public ActionResult<GetUserDto> CreateUser([FromBody] CreateUserDto createUserDto)
+        public ActionResult<GetUserDto> RegisterUser([FromBody] CreateUserDto createUserDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Bad Request", message = "Datos inválidos", details = ModelState, statusCode = 400 });
 
             GetUserDto newUser = _userService.CreateUser(createUserDto);
             return Created("", newUser);
+        }
+
+        /// <summary>
+        /// Inicia sesión con email y contraseña
+        /// </summary>
+        /// <param name="loginDto">Credenciales de acceso</param>
+        /// <returns>Resultado del login</returns>
+        /// <response code="200">Inicio de sesión exitoso</response>
+        /// <response code="401">Credenciales incorrectas</response>
+        [HttpPost("login")]
+        [ProducesResponseType<LoginResponseDto>(200)]
+        [ProducesResponseType(401)]
+        public ActionResult<LoginResponseDto> Login([FromBody] LoginDto loginDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new { error = "Bad Request", message = "Datos inválidos", details = ModelState, statusCode = 400 });
+
+            LoginResponseDto? result = _userService.LoginUser(loginDto);
+            if (result == null)
+                return Unauthorized(new { error = "Unauthorized", message = "Email o contraseña incorrectos", statusCode = 401 });
+
+            return Ok(result);
         }
 
         /// <summary>

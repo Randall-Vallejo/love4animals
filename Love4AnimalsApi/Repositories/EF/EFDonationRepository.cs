@@ -25,6 +25,15 @@ public class EFDonationRepository : IDonationRepository
             .FirstOrDefault(d => d.IdDonation == id);
     }
 
+    public IEnumerable<Donation> GetAllDonations()
+    {
+        return _context.Donations
+            .Include(d => d.Usuario)
+            .Include(d => d.Campania)
+            .OrderByDescending(d => d.Fecha)
+            .ToList();
+    }
+
     public Donation CreateDonation(Donation donation)
     {
         _context.Donations.Add(donation);

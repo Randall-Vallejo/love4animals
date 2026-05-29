@@ -1,8 +1,9 @@
 namespace Love4AnimalsApi.Dtos;
 
-public record GetUserDto (
+public record LoginResponseDto(
     int Id,
     string Name,
     string Email,
-    string Rol
+    string Rol,
+    string Message
 );

@@ -14,10 +14,6 @@ public record CreateCampaignDto (
     [Required(ErrorMessage = "La meta de monto es obligatoria")]
     [Range(0.01, 1000000, ErrorMessage = "La meta debe estar entre 0.01 y 1,000,000")]
     decimal MetaMonto,
-
-    [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
-    DateTime FechaInicio,
-
     [Required(ErrorMessage = "La fecha de fin es obligatoria")]
     DateTime FechaFin,
 

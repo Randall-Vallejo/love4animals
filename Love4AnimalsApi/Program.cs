@@ -23,6 +23,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = null; 
     });
 
+// Redis distributed cache (removed)
+
 // Configurar Scalar/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi(options =>

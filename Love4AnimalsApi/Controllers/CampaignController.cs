@@ -53,6 +53,10 @@ namespace Love4AnimalsApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Bad Request", message = "Datos inválidos", details = ModelState, statusCode = 400 });
 
+            // Validar que la fecha de fin sea posterior a ahora (UTC)
+            if (createCampaignDto.FechaFin.ToUniversalTime() <= DateTime.UtcNow)
+                return BadRequest(new { error = "Bad Request", message = "La fecha de fin debe ser posterior a la fecha actual", statusCode = 400 });
+
             try
             {
                 GetCampaignDto newCampaign = this.campaignService.CreateCampaign(createCampaignDto);

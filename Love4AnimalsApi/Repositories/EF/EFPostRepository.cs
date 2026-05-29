@@ -25,6 +25,15 @@ public class EFPostRepository : IPostRepository
             .FirstOrDefault(p => p.IdPost == id);
     }
 
+    public IEnumerable<Post> GetAllPosts()
+    {
+        return _context.Posts
+            .Include(p => p.Usuario)
+            .Include(p => p.Campania)
+            .OrderByDescending(p => p.Fecha)
+            .ToList();
+    }
+
     public Post CreatePost(Post post)
     {
         _context.Posts.Add(post);

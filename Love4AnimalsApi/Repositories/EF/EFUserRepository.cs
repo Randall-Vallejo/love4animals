@@ -26,6 +26,11 @@ public class EFUserRepository : IUserRepository
         return _context.Users.FirstOrDefault(u => u.Id == id);
     }
 
+    public User? GetUserByEmail(string email)
+    {
+        return _context.Users.FirstOrDefault(u => u.Email == email);
+    }
+
     /// <summary>
     /// Crea un nuevo usuario en la base de datos
     /// Genera automáticamente el ID mediante auto-incremento
@@ -48,7 +53,7 @@ public class EFUserRepository : IUserRepository
 
         existingUser.Name = user.Name;
         existingUser.Email = user.Email;
-        existingUser.Password = user.Password;
+        existingUser.PasswordHash = user.PasswordHash;
         existingUser.Rol = user.Rol;
 
         _context.Users.Update(existingUser);

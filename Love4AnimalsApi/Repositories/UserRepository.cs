@@ -13,7 +13,7 @@ public class UserRepository : IUserRepository
 
     public UserRepository()
     {
-        this.Users = [];
+        this.Users = new List<User>();
         User newUser = new(1, "Name", "test@gmail.com", "password123", "Admin");
         this.Users.Add(newUser);
     }
@@ -21,6 +21,11 @@ public class UserRepository : IUserRepository
     public User? GetUserById(int id)
     {
         return this.Users.FirstOrDefault(u => u.Id == id);
+    }
+
+    public User? GetUserByEmail(string email)
+    {
+        return this.Users.FirstOrDefault(u => string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase));
     }
 
     public User CreateUser(User user)
@@ -39,7 +44,7 @@ public class UserRepository : IUserRepository
         
         existingUser.Name = user.Name;
         existingUser.Email = user.Email;
-        existingUser.Password = user.Password;
+        existingUser.PasswordHash = user.PasswordHash;
         existingUser.Rol = user.Rol;
         return existingUser;
     }

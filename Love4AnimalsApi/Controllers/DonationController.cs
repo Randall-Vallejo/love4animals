@@ -1,6 +1,7 @@
 using Love4AnimalsApi.Dtos;
 using Love4AnimalsApi.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Love4AnimalsApi.Controllers
 {
@@ -17,6 +18,17 @@ namespace Love4AnimalsApi.Controllers
         public DonationController(IDonationService donationService)
         {
             this.donationService = donationService;
+        }
+
+        /// <summary>
+        /// Obtiene la lista de donaciones (cacheada)
+        /// </summary>
+        [HttpGet("")]
+        [ProducesResponseType(typeof(IEnumerable<GetDonationDto>), 200)]
+        public ActionResult<IEnumerable<GetDonationDto>> GetAllDonations()
+        {
+            var donations = donationService.GetAllDonations();
+            return Ok(donations);
         }
 
         /// <summary>

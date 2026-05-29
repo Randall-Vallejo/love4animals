@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../SafeWildlife_Support/SafeWildlife_Support.csproj" />
   <Project Path="Love4AnimalsApi/Love4AnimalsApi.csproj" />
 </Solution>

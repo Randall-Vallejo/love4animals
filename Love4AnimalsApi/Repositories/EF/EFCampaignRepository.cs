@@ -24,6 +24,14 @@ public class EFCampaignRepository : ICampaignRepository
             .FirstOrDefault(c => c.IdCampania == id);
     }
 
+    public IEnumerable<Campaign> GetAllCampaigns()
+    {
+        return _context.Campaigns
+            .Include(c => c.Usuario)
+            .OrderByDescending(c => c.FechaInicio)
+            .ToList();
+    }
+
     public Campaign CreateCampaign(Campaign campaign)
     {
         _context.Campaigns.Add(campaign);

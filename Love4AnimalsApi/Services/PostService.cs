@@ -28,6 +28,15 @@ public class PostService : IPostService
         );
     }
 
+    public IEnumerable<GetPostDto> GetAllPosts()
+    {
+        var posts = postRepository.GetAllPosts();
+        return posts.Select(post => new GetPostDto(
+            post.IdPost, post.Titulo, post.Descripcion,
+            post.FotoUrl, post.Fecha, post.UsuarioId, post.IdCampania
+        ));
+    }
+
     public GetPostDto CreatePost(CreatePostDto createPostDto)
     {
         User? user = userRepository.GetUserById(createPostDto.UsuarioId);
@@ -44,7 +53,7 @@ public class PostService : IPostService
         if (errors.Any())
             throw new ArgumentException(string.Join("; ", errors));
 
-        Post newPost = new(0, createPostDto.Titulo, createPostDto.Descripcion, createPostDto.FotoUrl, DateTime.Now, createPostDto.UsuarioId, createPostDto.IdCampania);
+        Post newPost = new(0, createPostDto.Titulo, createPostDto.Descripcion, createPostDto.FotoUrl, DateTime.UtcNow, createPostDto.UsuarioId, createPostDto.IdCampania);
         Post createdPost = postRepository.CreatePost(newPost);
         return new GetPostDto(createdPost.IdPost, createdPost.Titulo, createdPost.Descripcion, createdPost.FotoUrl, createdPost.Fecha, createdPost.UsuarioId, createdPost.IdCampania);
     }
@@ -65,7 +74,8 @@ public class PostService : IPostService
         if (errors.Any())
             throw new ArgumentException(string.Join("; ", errors));
 
-        Post postToUpdate = new(updatePostDto.IdPost, updatePostDto.Titulo, updatePostDto.Descripcion, updatePostDto.FotoUrl, updatePostDto.Fecha, updatePostDto.UsuarioId, updatePostDto.IdCampania);
+        DateTime fechaUtc = updatePostDto.Fecha.ToUniversalTime();
+        Post postToUpdate = new(updatePostDto.IdPost, updatePostDto.Titulo, updatePostDto.Descripcion, updatePostDto.FotoUrl, fechaUtc, updatePostDto.UsuarioId, updatePostDto.IdCampania);
         Post updatedPost = postRepository.UpdatePost(postToUpdate);
         return new GetPostDto(updatedPost.IdPost, updatedPost.Titulo, updatedPost.Descripcion, updatedPost.FotoUrl, updatedPost.Fecha, updatedPost.UsuarioId, updatedPost.IdCampania);
     }

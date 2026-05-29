@@ -34,6 +34,20 @@ public class DonationService : IDonationService
         );
     }
 
+    public IEnumerable<GetDonationDto> GetAllDonations()
+    {
+        var donations = donationRepository.GetAllDonations();
+        return donations.Select(d => new GetDonationDto(
+            d.IdDonation,
+            d.Monto,
+            d.MetodoPago,
+            d.Comprobante,
+            d.Fecha,
+            d.UsuarioId,
+            d.IdCampania
+        ));
+    }
+
     public GetDonationDto CreateDonation(CreateDonationDto createDonationDto)
     {
         var user = userRepository.GetUserById(createDonationDto.UsuarioId);
@@ -52,7 +66,7 @@ public class DonationService : IDonationService
             createDonationDto.Monto,
             createDonationDto.MetodoPago,
             createDonationDto.Comprobante,
-            createDonationDto.Fecha,
+            DateTime.UtcNow,
             createDonationDto.UsuarioId,
             createDonationDto.IdCampania
         );
@@ -82,12 +96,13 @@ public class DonationService : IDonationService
         if (campaign == null)
             throw new ArgumentException("Campaña no encontrada");
 
+        DateTime fechaUtc = updateDonationDto.Fecha.ToUniversalTime();
         Donation donationToUpdate = new(
             updateDonationDto.IdDonation,
             updateDonationDto.Monto,
             updateDonationDto.MetodoPago,
             updateDonationDto.Comprobante,
-            updateDonationDto.Fecha,
+            fechaUtc,
             updateDonationDto.UsuarioId,
             updateDonationDto.IdCampania
         );

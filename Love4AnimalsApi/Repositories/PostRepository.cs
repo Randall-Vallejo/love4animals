@@ -12,14 +12,19 @@ public class PostRepository : IPostRepository
 
     public PostRepository()
     {
-        this.Posts = [];
-        Post newPost = new(1, "Post de ejemplo", "Descripción de un post de ejemplo", "https://example.com/foto.jpg", DateTime.Now, 1, 1);
+        this.Posts = new List<Post>();
+        Post newPost = new(1, "Post de ejemplo", "Descripción de un post de ejemplo", "https://example.com/foto.jpg", DateTime.UtcNow, 1, 1);
         this.Posts.Add(newPost);
     }
 
     public Post? GetPostById(int id)
     {
         return this.Posts.FirstOrDefault(p => p.IdPost == id);
+    }
+
+    public IEnumerable<Post> GetAllPosts()
+    {
+        return this.Posts.OrderByDescending(p => p.Fecha).ToList();
     }
 
     public Post CreatePost(Post post)

@@ -12,8 +12,8 @@ public class CommentRepository : ICommentRepository
 
     public CommentRepository()
     {
-        this.Comments = [];
-        Comment newComment = new(1, "Excelente campaña, muy importante esta causa", DateTime.Now, 1, 1);
+        this.Comments = new List<Comment>();
+        Comment newComment = new(1, "Excelente campaña, muy importante esta causa", DateTime.UtcNow, 1, 1);
         this.Comments.Add(newComment);
     }
 
