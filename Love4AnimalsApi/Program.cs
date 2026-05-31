@@ -9,6 +9,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Caching.Distributed;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 //5234
@@ -24,6 +25,39 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = null; 
     });
+
+var allowedOrigins = builder.Configuration
+    .GetSection("Security:AllowedOrigins")
+    .Get<string[]>() ?? [];
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy
+            .WithOrigins(allowedOrigins)
+            .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .AllowAnyHeader();
+    });
+});
+
+var rateLimitPermitLimit = builder.Configuration.GetValue("Security:RateLimit:PermitLimit", 100);
+var rateLimitWindowSeconds = builder.Configuration.GetValue("Security:RateLimit:WindowSeconds", 60);
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = rateLimitPermitLimit,
+                Window = TimeSpan.FromSeconds(rateLimitWindowSeconds),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
+});
 
 // Redis distributed cache (removed)
 // Redis distributed cache (StackExchange.Redis)
@@ -108,7 +142,26 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Referrer-Policy"] = "no-referrer";
+    context.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+
+    await next();
+});
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
 app.UseHttpsRedirection();
+
+app.UseCors("Frontend");
+
+app.UseRateLimiter();
 
 app.UseAuthorization();
 
