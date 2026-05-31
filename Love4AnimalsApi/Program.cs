@@ -7,6 +7,8 @@ using Scalar.AspNetCore;
 using System.IO;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.Caching.Distributed;
 
 var builder = WebApplication.CreateBuilder(args);
 //5234
@@ -24,6 +26,13 @@ builder.Services.AddControllers()
     });
 
 // Redis distributed cache (removed)
+// Redis distributed cache (StackExchange.Redis)
+var redisConn = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
+builder.Services.AddStackExchangeRedisCache(opts =>
+{
+    opts.Configuration = redisConn;
+    opts.InstanceName = "love4animals:";
+});
 
 // Configurar Scalar/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

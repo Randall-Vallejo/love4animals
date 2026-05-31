@@ -2,6 +2,8 @@ using System;
 using Love4AnimalsApi.Dtos;
 using Love4AnimalsApi.Interfaces;
 using Love4AnimalsApi.Models;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace Love4AnimalsApi.Services;
 
@@ -10,12 +12,15 @@ public class DonationService : IDonationService
     private readonly IDonationRepository donationRepository;
     private readonly IUserRepository userRepository;
     private readonly ICampaignRepository campaignRepository;
+    private readonly IDistributedCache cache;
+    private readonly JsonSerializerOptions jsonOptions = new() { PropertyNamingPolicy = null };
 
-    public DonationService(IDonationRepository donationRepository, IUserRepository userRepository, ICampaignRepository campaignRepository)
+    public DonationService(IDonationRepository donationRepository, IUserRepository userRepository, ICampaignRepository campaignRepository, IDistributedCache cache)
     {
         this.donationRepository = donationRepository;
         this.userRepository = userRepository;
         this.campaignRepository = campaignRepository;
+        this.cache = cache;
     }
 
     public GetDonationDto? GetDonationById(int id)
@@ -36,8 +41,20 @@ public class DonationService : IDonationService
 
     public IEnumerable<GetDonationDto> GetAllDonations()
     {
+        const string key = "donations:all";
+        var cached = cache.GetString(key);
+        if (!string.IsNullOrEmpty(cached))
+        {
+            try
+            {
+                var dtoList = JsonSerializer.Deserialize<IEnumerable<GetDonationDto>>(cached, jsonOptions);
+                if (dtoList != null) return dtoList;
+            }
+            catch { }
+        }
+
         var donations = donationRepository.GetAllDonations();
-        return donations.Select(d => new GetDonationDto(
+        var result = donations.Select(d => new GetDonationDto(
             d.IdDonation,
             d.Monto,
             d.MetodoPago,
@@ -45,7 +62,11 @@ public class DonationService : IDonationService
             d.Fecha,
             d.UsuarioId,
             d.IdCampania
-        ));
+        )).ToList();
+
+        var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) };
+        cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+        return result;
     }
 
     public GetDonationDto CreateDonation(CreateDonationDto createDonationDto)
@@ -72,6 +93,7 @@ public class DonationService : IDonationService
         );
 
         Donation createdDonation = donationRepository.CreateDonation(newDonation);
+        cache.Remove("donations:all");
         return new GetDonationDto(
             createdDonation.IdDonation,
             createdDonation.Monto,
@@ -108,6 +130,7 @@ public class DonationService : IDonationService
         );
 
         Donation updatedDonation = donationRepository.UpdateDonation(donationToUpdate);
+        cache.Remove("donations:all");
         return new GetDonationDto(
             updatedDonation.IdDonation,
             updatedDonation.Monto,
@@ -121,6 +144,8 @@ public class DonationService : IDonationService
 
     public bool DeleteDonation(int id)
     {
-        return donationRepository.DeleteDonation(id);
+        var ok = donationRepository.DeleteDonation(id);
+        if (ok) cache.Remove("donations:all");
+        return ok;
     }
 }
