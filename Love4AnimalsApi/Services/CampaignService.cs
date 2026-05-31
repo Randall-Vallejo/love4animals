@@ -11,28 +11,22 @@ public class CampaignService : ICampaignService
     private ICampaignRepository campaignRepository;
     private IUserRepository userRepository;
     private readonly IDistributedCache cache;
+    private readonly ILogger<CampaignService> logger;
     private readonly JsonSerializerOptions jsonOptions = new() { PropertyNamingPolicy = null };
     
-    public CampaignService(ICampaignRepository campaignRepository, IUserRepository userRepository, IDistributedCache cache)
+    public CampaignService(ICampaignRepository campaignRepository, IUserRepository userRepository, IDistributedCache cache, ILogger<CampaignService> logger)
     {
         this.campaignRepository = campaignRepository;
         this.userRepository = userRepository;
         this.cache = cache;
+        this.logger = logger;
     }
 
     public GetCampaignDto? GetCampaignById(int id)
     {
         var key = CacheConstants.CampaignItem(id);
-        try
-        {
-            var cached = cache.GetString(key);
-            if (!string.IsNullOrEmpty(cached))
-            {
-                var dto = JsonSerializer.Deserialize<GetCampaignDto>(cached, jsonOptions);
-                if (dto != null) return dto;
-            }
-        }
-        catch { }
+        var cached = CacheOperations.TryGet<GetCampaignDto>(cache, key, jsonOptions, logger);
+        if (cached != null) return cached;
 
         Campaign? campaign = campaignRepository.GetCampaignById(id);
         if (campaign == null) return null;
@@ -43,12 +37,7 @@ public class CampaignService : ICampaignService
             campaign.FechaFin, campaign.Estado, campaign.UsuarioId
         );
 
-        try
-        {
-            var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DefaultTtlMinutes) };
-            cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
-        }
-        catch { }
+        CacheOperations.TrySet(cache, key, result, jsonOptions, logger);
 
         return result;
     }
@@ -56,16 +45,8 @@ public class CampaignService : ICampaignService
     public IEnumerable<GetCampaignDto> GetAllCampaigns()
     {
         const string key = CacheConstants.CampaignsAll;
-        var cached = cache.GetString(key);
-        if (!string.IsNullOrEmpty(cached))
-        {
-            try
-            {
-                var dtoList = JsonSerializer.Deserialize<IEnumerable<GetCampaignDto>>(cached, jsonOptions);
-                if (dtoList != null) return dtoList;
-            }
-            catch { }
-        }
+        var cached = CacheOperations.TryGet<IEnumerable<GetCampaignDto>>(cache, key, jsonOptions, logger);
+        if (cached != null) return cached;
 
         var campaigns = campaignRepository.GetAllCampaigns();
         var result = campaigns.Select(c => new GetCampaignDto(
@@ -74,12 +55,7 @@ public class CampaignService : ICampaignService
             c.FechaFin, c.Estado, c.UsuarioId
         )).ToList();
 
-        try
-        {
-            var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DefaultTtlMinutes) };
-            cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
-        }
-        catch { }
+        CacheOperations.TrySet(cache, key, result, jsonOptions, logger);
         return result;
     }
 
@@ -93,8 +69,8 @@ public class CampaignService : ICampaignService
         DateTime fechaFinUtc = createCampaignDto.FechaFin.ToUniversalTime();
         Campaign newCampaign = new(0, createCampaignDto.Titulo, createCampaignDto.Descripcion, createCampaignDto.MetaMonto, 0.00m, fechaInicioUtc, fechaFinUtc, createCampaignDto.Estado, createCampaignDto.UsuarioId);
         Campaign createdCampaign = campaignRepository.CreateCampaign(newCampaign);
-        try { cache.Remove(CacheConstants.CampaignsAll); } catch { }
-        try { cache.Remove(CacheConstants.CampaignItem(createdCampaign.IdCampania)); } catch { }
+        CacheOperations.TryRemove(cache, CacheConstants.CampaignsAll, logger);
+        CacheOperations.TryRemove(cache, CacheConstants.CampaignItem(createdCampaign.IdCampania), logger);
         return new GetCampaignDto(createdCampaign.IdCampania, createdCampaign.Titulo, createdCampaign.Descripcion, createdCampaign.MetaMonto, createdCampaign.MontoRecaudado, createdCampaign.FechaInicio, createdCampaign.FechaFin, createdCampaign.Estado, createdCampaign.UsuarioId);
     }
 
@@ -108,8 +84,8 @@ public class CampaignService : ICampaignService
         DateTime fechaFinUtc = updateCampaignDto.FechaFin.ToUniversalTime();
         Campaign campaignToUpdate = new(updateCampaignDto.IdCampania, updateCampaignDto.Titulo, updateCampaignDto.Descripcion, updateCampaignDto.MetaMonto, updateCampaignDto.MontoRecaudado, fechaInicioUtc, fechaFinUtc, updateCampaignDto.Estado, updateCampaignDto.UsuarioId);
         Campaign updatedCampaign = campaignRepository.UpdateCampaign(campaignToUpdate);
-        try { cache.Remove(CacheConstants.CampaignsAll); } catch { }
-        try { cache.Remove(CacheConstants.CampaignItem(updatedCampaign.IdCampania)); } catch { }
+        CacheOperations.TryRemove(cache, CacheConstants.CampaignsAll, logger);
+        CacheOperations.TryRemove(cache, CacheConstants.CampaignItem(updatedCampaign.IdCampania), logger);
         return new GetCampaignDto(updatedCampaign.IdCampania, updatedCampaign.Titulo, updatedCampaign.Descripcion, updatedCampaign.MetaMonto, updatedCampaign.MontoRecaudado, updatedCampaign.FechaInicio, updatedCampaign.FechaFin, updatedCampaign.Estado, updatedCampaign.UsuarioId);
     }
 
@@ -118,8 +94,8 @@ public class CampaignService : ICampaignService
         var ok = campaignRepository.DeleteCampaign(id);
         if (ok)
         {
-            try { cache.Remove(CacheConstants.CampaignsAll); } catch { }
-            try { cache.Remove(CacheConstants.CampaignItem(id)); } catch { }
+            CacheOperations.TryRemove(cache, CacheConstants.CampaignsAll, logger);
+            CacheOperations.TryRemove(cache, CacheConstants.CampaignItem(id), logger);
         }
         return ok;
     }
