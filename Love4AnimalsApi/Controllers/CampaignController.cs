@@ -18,6 +18,17 @@ namespace Love4AnimalsApi.Controllers
             this.campaignService = campaignService;
         }
 
+            /// <summary>
+            /// Obtiene la lista de campañas (cacheada)
+            /// </summary>
+            [HttpGet("")]
+            [ProducesResponseType(typeof(IEnumerable<GetCampaignDto>), 200)]
+            public ActionResult<IEnumerable<GetCampaignDto>> GetAllCampaigns()
+            {
+                var campaigns = campaignService.GetAllCampaigns();
+                return Ok(campaigns);
+            }
+
         /// <summary>
         /// Obtiene una campaña por su ID
         /// </summary>

@@ -17,10 +17,19 @@ services:
     networks:
       - love4animals_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U test -d love4animals"]  # 🔥 AQUÍ ESTÁ EL FIX
+      test: ["CMD-SHELL", "pg_isready -U test -d love4animals"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-love4animals
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - love4animals_network
 
   pgadmin:
     image: dpage/pgadmin4:9.14.0
@@ -45,13 +54,16 @@ services:
     restart: unless-stopped
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080   # 🔥 importante para que responda
+      - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=love4animals;Username=test;Password=test
+      - ConnectionStrings__Redis=redis:6379
     ports:
       - "5239:8080"
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - love4animals_network
 
