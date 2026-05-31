@@ -25,10 +25,22 @@ public class DonationService : IDonationService
 
     public GetDonationDto? GetDonationById(int id)
     {
+        var key = CacheConstants.DonationItem(id);
+        try
+        {
+            var cached = cache.GetString(key);
+            if (!string.IsNullOrEmpty(cached))
+            {
+                var dto = JsonSerializer.Deserialize<GetDonationDto>(cached, jsonOptions);
+                if (dto != null) return dto;
+            }
+        }
+        catch { }
+
         Donation? donation = donationRepository.GetDonationById(id);
         if (donation == null) return null;
 
-        return new GetDonationDto(
+        var result = new GetDonationDto(
             donation.IdDonation,
             donation.Monto,
             donation.MetodoPago,
@@ -37,6 +49,15 @@ public class DonationService : IDonationService
             donation.UsuarioId,
             donation.IdCampania
         );
+
+        try
+        {
+            var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DefaultTtlMinutes) };
+            cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+        }
+        catch { }
+
+        return result;
     }
 
     public IEnumerable<GetDonationDto> GetAllDonations()
@@ -64,8 +85,12 @@ public class DonationService : IDonationService
             d.IdCampania
         )).ToList();
 
-        var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) };
-        cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+        try
+        {
+            var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DefaultTtlMinutes) };
+            cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+        }
+        catch { }
         return result;
     }
 
@@ -93,7 +118,8 @@ public class DonationService : IDonationService
         );
 
         Donation createdDonation = donationRepository.CreateDonation(newDonation);
-        cache.Remove("donations:all");
+        try { cache.Remove(CacheConstants.DonationsAll); } catch { }
+        try { cache.Remove(CacheConstants.DonationItem(createdDonation.IdDonation)); } catch { }
         return new GetDonationDto(
             createdDonation.IdDonation,
             createdDonation.Monto,
@@ -130,7 +156,8 @@ public class DonationService : IDonationService
         );
 
         Donation updatedDonation = donationRepository.UpdateDonation(donationToUpdate);
-        cache.Remove("donations:all");
+        try { cache.Remove(CacheConstants.DonationsAll); } catch { }
+        try { cache.Remove(CacheConstants.DonationItem(updatedDonation.IdDonation)); } catch { }
         return new GetDonationDto(
             updatedDonation.IdDonation,
             updatedDonation.Monto,
@@ -145,7 +172,11 @@ public class DonationService : IDonationService
     public bool DeleteDonation(int id)
     {
         var ok = donationRepository.DeleteDonation(id);
-        if (ok) cache.Remove("donations:all");
+        if (ok)
+        {
+            try { cache.Remove(CacheConstants.DonationsAll); } catch { }
+            try { cache.Remove(CacheConstants.DonationItem(id)); } catch { }
+        }
         return ok;
     }
 }

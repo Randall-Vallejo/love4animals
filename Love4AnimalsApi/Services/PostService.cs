@@ -24,13 +24,34 @@ public class PostService : IPostService
 
     public GetPostDto? GetPostById(int id)
     {
+        var key = CacheConstants.PostItem(id);
+        try
+        {
+            var cached = cache.GetString(key);
+            if (!string.IsNullOrEmpty(cached))
+            {
+                var dto = JsonSerializer.Deserialize<GetPostDto>(cached, jsonOptions);
+                if (dto != null) return dto;
+            }
+        }
+        catch { }
+
         Post? post = postRepository.GetPostById(id);
         if (post == null) return null;
 
-        return new GetPostDto(
-            post.IdPost, post.Titulo, post.Descripcion, 
+        var result = new GetPostDto(
+            post.IdPost, post.Titulo, post.Descripcion,
             post.FotoUrl, post.Fecha, post.UsuarioId, post.IdCampania
         );
+
+        try
+        {
+            var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DefaultTtlMinutes) };
+            cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+        }
+        catch { }
+
+        return result;
     }
 
     public IEnumerable<GetPostDto> GetAllPosts()
@@ -53,11 +74,12 @@ public class PostService : IPostService
             post.FotoUrl, post.Fecha, post.UsuarioId, post.IdCampania
         )).ToList();
 
-        var options = new DistributedCacheEntryOptions
+        try
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-        };
-        cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+            var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DefaultTtlMinutes) };
+            cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+        }
+        catch { }
         return result;
     }
 
@@ -80,7 +102,8 @@ public class PostService : IPostService
         Post newPost = new(0, createPostDto.Titulo, createPostDto.Descripcion, createPostDto.FotoUrl, DateTime.UtcNow, createPostDto.UsuarioId, createPostDto.IdCampania);
         Post createdPost = postRepository.CreatePost(newPost);
         // Invalidate cache
-        cache.Remove("posts:all");
+        try { cache.Remove(CacheConstants.PostsAll); } catch { }
+        try { cache.Remove(CacheConstants.PostItem(createdPost.IdPost)); } catch { }
         return new GetPostDto(createdPost.IdPost, createdPost.Titulo, createdPost.Descripcion, createdPost.FotoUrl, createdPost.Fecha, createdPost.UsuarioId, createdPost.IdCampania);
     }
 
@@ -103,14 +126,19 @@ public class PostService : IPostService
         DateTime fechaUtc = updatePostDto.Fecha.ToUniversalTime();
         Post postToUpdate = new(updatePostDto.IdPost, updatePostDto.Titulo, updatePostDto.Descripcion, updatePostDto.FotoUrl, fechaUtc, updatePostDto.UsuarioId, updatePostDto.IdCampania);
         Post updatedPost = postRepository.UpdatePost(postToUpdate);
-        cache.Remove("posts:all");
+        try { cache.Remove(CacheConstants.PostsAll); } catch { }
+        try { cache.Remove(CacheConstants.PostItem(updatedPost.IdPost)); } catch { }
         return new GetPostDto(updatedPost.IdPost, updatedPost.Titulo, updatedPost.Descripcion, updatedPost.FotoUrl, updatedPost.Fecha, updatedPost.UsuarioId, updatedPost.IdCampania);
     }
 
     public bool DeletePost(int id)
     {
         var ok = postRepository.DeletePost(id);
-        if (ok) cache.Remove("posts:all");
+        if (ok)
+        {
+            try { cache.Remove(CacheConstants.PostsAll); } catch { }
+            try { cache.Remove(CacheConstants.PostItem(id)); } catch { }
+        }
         return ok;
     }
 }

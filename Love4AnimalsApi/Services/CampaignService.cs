@@ -22,19 +22,40 @@ public class CampaignService : ICampaignService
 
     public GetCampaignDto? GetCampaignById(int id)
     {
+        var key = CacheConstants.CampaignItem(id);
+        try
+        {
+            var cached = cache.GetString(key);
+            if (!string.IsNullOrEmpty(cached))
+            {
+                var dto = JsonSerializer.Deserialize<GetCampaignDto>(cached, jsonOptions);
+                if (dto != null) return dto;
+            }
+        }
+        catch { }
+
         Campaign? campaign = campaignRepository.GetCampaignById(id);
         if (campaign == null) return null;
 
-        return new GetCampaignDto(
-            campaign.IdCampania, campaign.Titulo, campaign.Descripcion, 
-            campaign.MetaMonto, campaign.MontoRecaudado, campaign.FechaInicio, 
+        var result = new GetCampaignDto(
+            campaign.IdCampania, campaign.Titulo, campaign.Descripcion,
+            campaign.MetaMonto, campaign.MontoRecaudado, campaign.FechaInicio,
             campaign.FechaFin, campaign.Estado, campaign.UsuarioId
         );
+
+        try
+        {
+            var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DefaultTtlMinutes) };
+            cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+        }
+        catch { }
+
+        return result;
     }
 
     public IEnumerable<GetCampaignDto> GetAllCampaigns()
     {
-        const string key = "campaigns:all";
+        const string key = CacheConstants.CampaignsAll;
         var cached = cache.GetString(key);
         if (!string.IsNullOrEmpty(cached))
         {
@@ -53,8 +74,12 @@ public class CampaignService : ICampaignService
             c.FechaFin, c.Estado, c.UsuarioId
         )).ToList();
 
-        var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) };
-        cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+        try
+        {
+            var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DefaultTtlMinutes) };
+            cache.SetString(key, JsonSerializer.Serialize(result, jsonOptions), options);
+        }
+        catch { }
         return result;
     }
 
@@ -68,6 +93,8 @@ public class CampaignService : ICampaignService
         DateTime fechaFinUtc = createCampaignDto.FechaFin.ToUniversalTime();
         Campaign newCampaign = new(0, createCampaignDto.Titulo, createCampaignDto.Descripcion, createCampaignDto.MetaMonto, 0.00m, fechaInicioUtc, fechaFinUtc, createCampaignDto.Estado, createCampaignDto.UsuarioId);
         Campaign createdCampaign = campaignRepository.CreateCampaign(newCampaign);
+        try { cache.Remove(CacheConstants.CampaignsAll); } catch { }
+        try { cache.Remove(CacheConstants.CampaignItem(createdCampaign.IdCampania)); } catch { }
         return new GetCampaignDto(createdCampaign.IdCampania, createdCampaign.Titulo, createdCampaign.Descripcion, createdCampaign.MetaMonto, createdCampaign.MontoRecaudado, createdCampaign.FechaInicio, createdCampaign.FechaFin, createdCampaign.Estado, createdCampaign.UsuarioId);
     }
 
@@ -81,11 +108,19 @@ public class CampaignService : ICampaignService
         DateTime fechaFinUtc = updateCampaignDto.FechaFin.ToUniversalTime();
         Campaign campaignToUpdate = new(updateCampaignDto.IdCampania, updateCampaignDto.Titulo, updateCampaignDto.Descripcion, updateCampaignDto.MetaMonto, updateCampaignDto.MontoRecaudado, fechaInicioUtc, fechaFinUtc, updateCampaignDto.Estado, updateCampaignDto.UsuarioId);
         Campaign updatedCampaign = campaignRepository.UpdateCampaign(campaignToUpdate);
+        try { cache.Remove(CacheConstants.CampaignsAll); } catch { }
+        try { cache.Remove(CacheConstants.CampaignItem(updatedCampaign.IdCampania)); } catch { }
         return new GetCampaignDto(updatedCampaign.IdCampania, updatedCampaign.Titulo, updatedCampaign.Descripcion, updatedCampaign.MetaMonto, updatedCampaign.MontoRecaudado, updatedCampaign.FechaInicio, updatedCampaign.FechaFin, updatedCampaign.Estado, updatedCampaign.UsuarioId);
     }
 
     public bool DeleteCampaign(int id)
     {
-        return campaignRepository.DeleteCampaign(id);
+        var ok = campaignRepository.DeleteCampaign(id);
+        if (ok)
+        {
+            try { cache.Remove(CacheConstants.CampaignsAll); } catch { }
+            try { cache.Remove(CacheConstants.CampaignItem(id)); } catch { }
+        }
+        return ok;
     }
 }
